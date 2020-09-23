@@ -21,24 +21,24 @@ $ cd ..\work_to_HH_and_SJ
 $ C:\work_to_HH_and_SJ>
 ```
 
-Пункт 4: Установите зависимости
+Пункт 3: Установите зависимости
 
 ```bash
 $ pip install -r requirements.txt
 ```
 
-Пункт 5: Создайте фаил .env
+Пункт 4: Создайте фаил .env
 
 ```bash
 ```
 
-Пункт 6: Запишите свой пароль SuperJob в .env
+Пункт 5: Запишите свой пароль SuperJob в .env
 
 ```bash
 TOKEN_SUPERJOB=...
 ```
 
-Пункт 7: запустите код
+Пункт 6: запустите код
 
 ```bash
 $ api_5.py
