@@ -29,14 +29,14 @@ $ pip install -r requirements.txt
 
 Пункт 5: Создайте фаил .env
 
-'''bash
-'''
+```bash
+```
 
 Пункт 6: Запишите свой пароль SuperJob в .env
 
-'''bash
+```bash
 TOKEN_SUPERJOB=...
-'''
+```
 
 Пункт 7: запустите код
 
