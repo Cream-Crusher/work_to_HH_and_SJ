@@ -3,7 +3,7 @@ import json
 import os
 from terminaltables import SingleTable
 from dotenv import load_dotenv
-load_dotenv()
+
 
 
 def counting_data_for_statistics(the_total_salary,
@@ -44,7 +44,8 @@ def predict_rub_salary_for_SuperJo(one_vacancy_in_SJ):
 
 
 if __name__ == '__main__':
-    PROGRAMMING_LANGUAGES = [
+    load_dotenv()
+    programming_languages = [
       'JavaScript',
       'Java',
       'PHP',
@@ -70,7 +71,7 @@ if __name__ == '__main__':
     url_SJ = 'https://api.superjob.ru/2.0/vacancies'
     information_on_vacancies_in_hh = {}
     information_on_vacancies_in_SJ = {}
-    for language in PROGRAMMING_LANGUAGES:
+    for language in programming_languages:
         full_salary = 0
         vacancies_processed = 0
         average_salary = 0
@@ -90,7 +91,7 @@ if __name__ == '__main__':
                 language: {'vacancies_found': number_of_vacancies_SJ,
             'vacancies_processed': vacancies_processed, 'average_salary': int(
                 average_salary)}})
-    for language in PROGRAMMING_LANGUAGES:
+    for language in programming_languages:
         number_of_requests = 0
         page = 0
         vacancies_processed = 0
