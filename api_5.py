@@ -46,8 +46,8 @@ def processed_data_by_language(
     return programming_languages_statistics
 
 
-def predict_rub_salary_for_superjo(one_vacancy_in_SJ):
-    salary_jobs_sj = one_vacancy_in_SJ['payment_from']
+def predict_rub_salary_for_superjo(one_vacancy_in_sj):
+    salary_jobs_sj = one_vacancy_in_sj['payment_from']
     return salary_jobs_sj
 
 
@@ -115,8 +115,8 @@ if __name__ == '__main__':
         vacancies_sj = (dictionary_of_site_sj(
             token, url_sj, language).json()["objects"])
         for separate_vacancy in range(len(vacancies_sj)):
-            one_vacancy_in_SJ = vacancies_sj[separate_vacancy]
-            salary_jobs_sj = predict_rub_salary_for_superjo(one_vacancy_in_SJ)
+            one_vacancy_in_sj = vacancies_sj[separate_vacancy]
+            salary_jobs_sj = predict_rub_salary_for_superjo(one_vacancy_in_sj)
             if salary_jobs_sj != 0:
                 vacancies_processed += 1
                 full_salary += salary_jobs_sj
@@ -175,8 +175,8 @@ if __name__ == '__main__':
         information_about_job_vacancies_sj.append(
           processed_data_by_language(
                 information_about_a_specific_language, language))
-        table_instance_SJ = SingleTable(
+        table_instance_sj = SingleTable(
                 information_about_job_vacancies_sj, 'SuperJob {}'.format(
-                    one_vacancy_in_SJ["town"]['title']))
-    print(table_instance_SJ.table)
+                    one_vacancy_in_sj["town"]['title']))
+    print(table_instance_sj.table)
     print(table_instance_HH.table)
