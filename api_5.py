@@ -1,50 +1,10 @@
-import requests
 import os
 from terminaltables import SingleTable
 from dotenv import load_dotenv
-
-
-def calculate_the_average_salary(
-    the_total_salary,
-        vacancies_processed):
-    average_salary = (the_total_salary / vacancies_processed)
-    return average_salary
-
-
-def adding_information_about_vacancies_from_the_hh_website(
-    page,
-        language, url_hh,
-        City=1,
-        max_page=100,
-        max_number_of_days=30):
-    payload = {'text': 'Программист {}'.format(
-        language), 'area': City, 'period': max_number_of_days,
-         'per_page': max_page,
-         'page': '{}'.format(page), 'only_with_salary': 'True'}
-    response = requests.get(url_hh, params=payload)
-    response.raise_for_status()
-    return response
-
-
-def predict_rub_salary(information_on_vacancies, number_of_vacancies_per_page):
-    salary = information_on_vacancies['items'][
-        number_of_vacancies_per_page]['salary']
-    return salary
-
-
-def adding_information_about_vacancies_from_the_sj_website(
-    token,
-        url_sj, language,
-        name_town=4,
-        catalogue_designation=48,
-        maximum_number_of_vacancies=100):
-    auth_token = {'X-Api-App-Id': '{}'.format(token)}
-    params = {'keyword': '{}'.format(
-        language), 'town': name_town, 'catalogues': catalogue_designation,
-        'count': maximum_number_of_vacancies}
-    response = requests.get(url_sj, headers=auth_token, params=params)
-    response.raise_for_status()
-    return response
+from hh import calculate_the_average_salary, predict_rub_salary
+from hh import adding_information_about_vacancies_from_the_hh_website
+from sj import adding_information_about_vacancies_from_the_sj_website
+from sj import predict_rub_salary_for_superjo
 
 
 def processed_data_by_language(
@@ -58,9 +18,17 @@ def processed_data_by_language(
     return programming_languages_statistics
 
 
-def predict_rub_salary_for_superjo(one_vacancy_in_SJ):
-    salary_jobs_sj = one_vacancy_in_SJ
-    return salary_jobs_sj
+def collecting_information_about_vacancies_hh(
+    languages,
+        vacancies_sj,
+        processed_vacancies_in_each_language,
+        the_average_salary_for_language):
+    information_on_vacancies_in_hh.update(({languages[id_language]: {
+      'vacancies_found': number_of_vacancies[id_language],
+      'vacancies_processed': processed_vacancies_in_each_language[
+          id_language], 'average_salary': int(
+        the_average_salary_for_language[id_language])}}))
+    return information_on_vacancies_in_hh
 
 
 def collecting_information_about_vacancies_sj(
@@ -73,19 +41,6 @@ def collecting_information_about_vacancies_sj(
                 vacancies_processed, 'average_salary': int(
                   average_salary)}})
     return information_on_vacancies_in_sj
-
-
-def collecting_information_about_vacancies_hh(
-    languages,
-        vacancies_sj,
-        processed_vacancies_in_each_language,
-        the_average_salary_for_language):
-    information_on_vacancies_in_hh.update(({languages[id_language]: {
-      'vacancies_found': number_of_vacancies[id_language],
-      'vacancies_processed': processed_vacancies_in_each_language[
-          id_language], 'average_salary': int(
-        the_average_salary_for_language[id_language])}}))
-    return information_on_vacancies_in_hh
 
 
 if __name__ == '__main__':
@@ -110,45 +65,16 @@ if __name__ == '__main__':
         'Вакансий обработано',
         'Средняя зарплата']
     information_about_job_vacancies_hh = []
-    information_about_job_vacancies_sj = []
-    token = os.getenv('TOKEN_SUPERJOB')
     the_average_salary_for_language = []
     languages = []
     number_of_vacancies = []
     processed_vacancies_in_each_language = []
     url_hh = 'https://api.hh.ru/vacancies'
-    url_sj = 'https://api.superjob.ru/2.0/vacancies'
     information_on_vacancies_in_hh = {}
+    information_about_job_vacancies_sj = []
+    token = os.getenv('TOKEN_SUPERJOB')
+    url_sj = 'https://api.superjob.ru/2.0/vacancies'
     information_on_vacancies_in_sj = {}
-
-    for language in programming_languages:
-        full_salary = 0
-        vacancies_processed = 0
-        average_salary = 0
-        vacancies_sj = (adding_information_about_vacancies_from_the_sj_website(
-            token, url_sj, language).json()["objects"])
-
-        for separate_vacancy in range(len(vacancies_sj)):
-            one_vacancy_in_SJ = vacancies_sj[separate_vacancy]
-            salary_jobs_sj = predict_rub_salary_for_superjo(one_vacancy_in_SJ)
-            if salary_jobs_sj['payment_to'] and salary_jobs_sj['payment_from']:
-                vacancies_processed += 1
-                full_salary += (salary_jobs_sj['payment_to'] + salary_jobs_sj[
-                  'payment_from']) / 2
-            if salary_jobs_sj['payment_to'] and salary_jobs_sj[
-              'payment_from'] == 0:
-                vacancies_processed += 1
-                full_salary += salary_jobs_sj['payment_to'] * 0.8
-            if salary_jobs_sj['payment_from'] and salary_jobs_sj[
-              'payment_to'] == 0:
-                vacancies_processed += 1
-                full_salary += salary_jobs_sj['payment_from'] * 1.2
-            if vacancies_processed:
-                average_salary = full_salary / vacancies_processed
-            information_on_vacancies_in_sj = (
-                collecting_information_about_vacancies_sj(
-                    vacancies_sj,
-                    vacancies_processed, average_salary))
 
     for language in programming_languages:
         number_of_requests = 0
@@ -210,6 +136,35 @@ if __name__ == '__main__':
                 information_about_a_specific_language, language))
         table_instance_HH = SingleTable(
             information_about_job_vacancies_hh, 'HeadHunter Moscow')
+
+    for language in programming_languages:
+        full_salary = 0
+        vacancies_processed = 0
+        average_salary = 0
+        vacancies_sj = (adding_information_about_vacancies_from_the_sj_website(
+            token, url_sj, language).json()["objects"])
+
+        for separate_vacancy in range(len(vacancies_sj)):
+            one_vacancy_in_SJ = vacancies_sj[separate_vacancy]
+            salary_jobs_sj = predict_rub_salary_for_superjo(one_vacancy_in_SJ)
+            if salary_jobs_sj['payment_to'] and salary_jobs_sj['payment_from']:
+                vacancies_processed += 1
+                full_salary += (salary_jobs_sj['payment_to'] + salary_jobs_sj[
+                  'payment_from']) / 2
+            if salary_jobs_sj['payment_to'] and salary_jobs_sj[
+              'payment_from'] == 0:
+                vacancies_processed += 1
+                full_salary += salary_jobs_sj['payment_to'] * 0.8
+            if salary_jobs_sj['payment_from'] and salary_jobs_sj[
+              'payment_to'] == 0:
+                vacancies_processed += 1
+                full_salary += salary_jobs_sj['payment_from'] * 1.2
+            if vacancies_processed:
+                average_salary = full_salary / vacancies_processed
+            information_on_vacancies_in_sj = (
+                collecting_information_about_vacancies_sj(
+                    vacancies_sj,
+                    vacancies_processed, average_salary))
     information_about_job_vacancies_sj.append(table_data)
 
     for language in information_on_vacancies_in_sj:
