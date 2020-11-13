@@ -1,10 +1,10 @@
 import os
 from terminaltables import SingleTable
 from dotenv import load_dotenv
-from hh import calculate_the_average_salary, predict_rub_salary
-from hh import adding_information_about_vacancies_from_the_hh_website
-from sj import adding_information_about_vacancies_from_the_sj_website
-from sj import predict_rub_salary_for_superjo
+from hh import calculate_the_average_salary, predict_rub_salary,\
+              adding_information_about_vacancies_from_the_hh_website
+from sj import adding_information_about_vacancies_from_the_sj_website,\
+                predict_rub_salary_for_superjo
 
 
 def processed_data_by_language(
