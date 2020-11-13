@@ -64,17 +64,17 @@ if __name__ == '__main__':
         'Вакансий найдено',
         'Вакансий обработано',
         'Средняя зарплата']
-    information_about_job_vacancies_hh = []
     the_average_salary_for_language = []
     languages = []
     number_of_vacancies = []
     processed_vacancies_in_each_language = []
     url_hh = 'https://api.hh.ru/vacancies'
-    information_on_vacancies_in_hh = {}
-    information_about_job_vacancies_sj = []
-    token = os.getenv('TOKEN_SUPERJOB')
     url_sj = 'https://api.superjob.ru/2.0/vacancies'
+    information_on_vacancies_in_hh = {}
     information_on_vacancies_in_sj = {}
+    information_about_job_vacancies_sj = []
+    information_about_job_vacancies_hh = []
+    token = os.getenv('TOKEN_SUPERJOB')
 
     for language in programming_languages:
         number_of_requests = 0
