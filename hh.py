@@ -13,7 +13,7 @@ def get_information_from_hh(page, language, url_hh, City=1,
         'area': сity,
         'period': max_number_of_days,
         'per_page': max_page,
-        'page': '{}'.format(page),
+        'page': page,
         'only_with_salary': 'True'
     }
     response = requests.get(url_hh, params=payload)

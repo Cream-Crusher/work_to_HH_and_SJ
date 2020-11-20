@@ -9,7 +9,7 @@ def get_information_from_sj(token, url_sj,
         'X-Api-App-Id': '{}'.format(token)
         }
     params = {
-        'keyword': '{}'.format(language),
+        'keyword': language,
         'town': name_town,
         'catalogues': catalogue_designation,
         'count': maximum_number_of_vacancies
