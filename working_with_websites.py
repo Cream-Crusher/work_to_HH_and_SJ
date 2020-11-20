@@ -96,11 +96,11 @@ if __name__ == '__main__':
                     vacancies_processed += 1
                     the_total_salary += (salary_for_work['from'] + salary_for_work['to']) / 2
 
-                if salary_for_work['from'] is None:
+                if not salary_for_work['from']:
                     vacancies_processed += 1
                     the_total_salary += salary_for_work['to'] * 0.8
 
-                if salary_for_work['to'] is None:
+                if not salary_for_work['to']:
                     vacancies_processed += 1
                     the_total_salary += salary_for_work['from'] * 1.2
 
