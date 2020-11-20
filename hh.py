@@ -10,7 +10,7 @@ def get_information_from_hh(page, language, url_hh, City=1,
                             max_page=100, max_number_of_days=30):
     payload = {
         'text': 'Программист {}'.format(language),
-        'area': City,
+        'area': сity,
         'period': max_number_of_days,
         'per_page': max_page,
         'page': '{}'.format(page),
