@@ -1,27 +1,31 @@
 import requests
 
 
-def calculate_the_average_salary(the_total_salary, vacancies_processed):
-    average_salary = (the_total_salary / vacancies_processed)
-    return average_salary
+def get_information_from_hh(language):
+    hh_url = 'https://api.hh.ru/vacancies'
+    page = 0
+    vacancies = []
+    pages = 100
+    city=1
 
-
-def get_information_from_hh(page, language, url_hh, City=1,
-                            max_page=100, max_number_of_days=30):
-    payload = {
+    params = {
         'text': 'Программист {}'.format(language),
-        'area': сity,
-        'period': max_number_of_days,
-        'per_page': max_page,
+        'area': city,
         'page': page,
-        'only_with_salary': 'True'
-    }
-    response = requests.get(url_hh, params=payload)
-    response.raise_for_status()
-    return response
+        'only_with_salary': 'True'}
+
+    while page < pages:
+        params['page'] = page
+        response = requests.get(hh_url, params=params)
+        response.raise_for_status()
+        pages = response.json()['pages']
+        page += 1
+        vacancies.append(response.json())
+    return vacancies
 
 
-def predict_rub_salary(information_on_vacancies, number_of_vacancies_per_page):
-    salary = information_on_vacancies['items']
-    salary = salary[number_of_vacancies_per_page]['salary']
-    return salary
+def get_vacancies(vacancies):
+    vacancies = {'vacancies': [vacancies['items']],
+                'found': vacancies['found']
+                }
+    return vacancies
