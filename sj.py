@@ -2,11 +2,12 @@ import requests
 
 
 def get_information_from_sj(language, TOKEN):
-    catalogue_designation=48
+
+    catalogue_designation = 48
     maximum_number_of_vacancies = 100
     url_sj = 'https://api.superjob.ru/2.0/vacancies'
     vacancies = []
-    name_town=4
+    name_town = 4
     page = 0
     number_of_possible_vacancies = 0
     total_vacancies = 1
@@ -29,3 +30,18 @@ def get_information_from_sj(language, TOKEN):
         page += 1
         number_of_possible_vacancies += 100
     return vacancies[entrance]
+
+
+def get_vacancies_sj(all_vacancies, language):
+
+    information_on_vacancies = []
+
+    for vacancies in all_vacancies["objects"]:
+            vacancies = {'language': language,
+                    'pay_from': vacancies['payment_from'],
+                    'pay_to':  vacancies['payment_to'],
+                    'currency': vacancies['currency'],
+                    'found': all_vacancies['total']
+                    }
+            information_on_vacancies.append(vacancies)
+    return information_on_vacancies
