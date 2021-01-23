@@ -74,8 +74,6 @@ if __name__ == '__main__':
         'Вакансий найдено',
         'Вакансий обработано',
         'Средняя зарплата']]
-    programming_languages = ['Go']
-    '''
     programming_languages = [
         'JavaScript',
         'Java',
@@ -89,7 +87,6 @@ if __name__ == '__main__':
         'Go',
         'Swift',
         'Typescript']
-    '''
     entrance = 0
 
     for language in programming_languages:
