@@ -1,7 +1,7 @@
 import requests
 
 
-def get_information_from_sj(language, TOKEN):
+def get_information_from_sj(language, token):
 
     catalogue_designation = 48
     maximum_number_of_vacancies = 100
@@ -13,7 +13,7 @@ def get_information_from_sj(language, TOKEN):
     total_vacancies = 1
     entrance = 0
     auth_token = {
-        'X-Api-App-Id': TOKEN
+        'X-Api-App-Id': token
         }
     while number_of_possible_vacancies < total_vacancies:
         params = {
@@ -37,11 +37,12 @@ def get_vacancies_sj(all_vacancies, language):
     information_on_vacancies = []
 
     for vacancies in all_vacancies["objects"]:
-            vacancies = {'language': language,
-                    'pay_from': vacancies['payment_from'],
-                    'pay_to':  vacancies['payment_to'],
-                    'currency': vacancies['currency'],
-                    'found': all_vacancies['total']
-                    }
+            vacancies = {
+                'language': language,
+                'pay_from': vacancies['payment_from'],
+                'pay_to':  vacancies['payment_to'],
+                'currency': vacancies['currency'],
+                'found': all_vacancies['total']
+                }
             information_on_vacancies.append(vacancies)
     return information_on_vacancies
