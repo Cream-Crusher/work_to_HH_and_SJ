@@ -48,4 +48,5 @@ def get_vacancies_hh(all_vacancies, language):
                     'found': part_vacancies['found']
                     }
             information_on_vacancies.append(vacancies)
+
     return information_on_vacancies

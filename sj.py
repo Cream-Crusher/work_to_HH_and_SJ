@@ -29,6 +29,7 @@ def get_information_from_sj(language, token):
         total_vacancies = vacancies[entrance]['total']
         page += 1
         number_of_possible_vacancies += 100
+
     return vacancies[entrance]
 
 
@@ -45,4 +46,5 @@ def get_vacancies_sj(all_vacancies, language):
                 'found': all_vacancies['total']
                 }
             information_on_vacancies.append(vacancies)
+
     return information_on_vacancies
