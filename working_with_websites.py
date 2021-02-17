@@ -13,30 +13,28 @@ def predict_rub_salary(pay_from, pay_to):
         return pay_from * 1.2
     elif pay_to:
         return pay_to * 0.8
-    else:
-        return
 
 
 def get_information_for_the_table(information_on_vacancies, language, site_name):
-    salary = 0
+    full_salary = 0
     entrance = 0
     vacancies_found = information_on_vacancies[entrance]["found"]
-    processed_vacancies = vacancies_found
+    processed_vacancies = 0
 
     for information_on_vacancies in information_on_vacancies:
         pay_from = information_on_vacancies['pay_from']
         pay_to = information_on_vacancies['pay_to']
 
-        if information_on_vacancies['currency'] == 'RUR' or pay_from or pay_to and \
+        if information_on_vacancies['currency'] == 'RUR'  or \
             information_on_vacancies['currency'] == 'rub':
+            salary = predict_rub_salary(pay_from, pay_to)
 
-            salary += predict_rub_salary(pay_from, pay_to)
+            if salary != None:
+                processed_vacancies += 1
+                full_salary += salary
 
-        else:
-            processed_vacancies -= 1
-
-    average_salary = int(salary / processed_vacancies)
-    table_with_data_on_vacancies = {
+    average_salary = int(full_salary / processed_vacancies)
+    data_on_vacancies = {
                                     language:
                                             {
                                             'vacancies_found': vacancies_found,
@@ -45,33 +43,34 @@ def get_information_for_the_table(information_on_vacancies, language, site_name)
                                             }
                                         }
 
-    return table_with_data_on_vacancies
+    return data_on_vacancies
 
 
-def get_table(programming_languages):
-    token = os.getenv('TOKEN_SUPERJOB')
-    site_name = ['hh', 'sj']
+def get_table_hh(programming_languages):
+    site_name = 'hh'
+    vacancies = []
 
-    for site_name in site_name: 
-        vacancies = []
- 
-        for language in programming_languages:
+    for language in programming_languages:
+        all_vacancies = get_information_from_hh(language)
+        information_on_vacancies = get_vacancies_hh(all_vacancies, language)
+        vacancies.append(get_information_for_the_table(information_on_vacancies,
+                                                        language, site_name)
+                                                        )
+    print_vacancy_info(site_name, vacancies)
 
-            if site_name == 'hh':
-                all_vacancies = get_information_from_hh(language)
-                information_on_vacancies = get_vacancies_hh(all_vacancies, language)
-                vacancies.append(get_information_for_the_table(information_on_vacancies,
-                                                                language, site_name)
-                                                                )
 
-            if site_name == 'sj':
-                all_vacancies = get_information_from_sj(language, token)
-                information_on_vacancies = get_vacancies_sj(all_vacancies, language)
-                vacancies.append(get_information_for_the_table(information_on_vacancies,
-                                                                language, site_name)
-                                                                )
-                              
-        print_vacancy_info(site_name, vacancies)
+def get_table_sj(programming_languages, token):
+    site_name = 'sj'
+    vacancies = []
+
+    for language in programming_languages:
+        print(language)
+        all_vacancies = get_information_from_sj(language, token)
+        information_on_vacancies = get_vacancies_sj(all_vacancies, language)
+        vacancies.append(get_information_for_the_table(information_on_vacancies,
+                                                        language, site_name)
+                                                        )
+    print_vacancy_info(site_name, vacancies)
 
 
 def print_vacancy_info(site_name, vacancies):
@@ -99,6 +98,7 @@ def print_vacancy_info(site_name, vacancies):
 
 if __name__ == '__main__':
     load_dotenv()
+    token = os.getenv('TOKEN_SUPERJOB')
     programming_languages = [
         'JavaScript',
         'Java',
@@ -108,8 +108,7 @@ if __name__ == '__main__':
         'C++',
         'C#',
         'C',
-        'Scala',
         'Go',
-        'Swift',
         'Typescript']
-    get_table(programming_languages)
+    get_table_hh(programming_languages)
+    get_table_sj(programming_languages, token)

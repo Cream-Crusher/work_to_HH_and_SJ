@@ -46,5 +46,4 @@ def get_vacancies_sj(all_vacancies, language):
                 'found': all_vacancies['total']
                 }
             information_on_vacancies.append(vacancies)
-
     return information_on_vacancies
