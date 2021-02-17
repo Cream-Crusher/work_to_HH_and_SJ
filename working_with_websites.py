@@ -64,7 +64,6 @@ def get_table_sj(programming_languages, token):
     vacancies = []
 
     for language in programming_languages:
-        print(language)
         all_vacancies = get_information_from_sj(language, token)
         information_on_vacancies = get_vacancies_sj(all_vacancies, language)
         vacancies.append(get_information_for_the_table(information_on_vacancies,
