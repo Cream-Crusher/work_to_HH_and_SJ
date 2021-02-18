@@ -20,59 +20,58 @@ def get_information_for_the_table(information_on_vacancies, language, site_name)
     entrance = 0
     vacancies_found = information_on_vacancies[entrance]["found"]
     processed_vacancies = 0
+ 
+    for information_on_vacancy in information_on_vacancies:
+        pay_from = information_on_vacancy['pay_from']
+        pay_to = information_on_vacancy['pay_to']
 
-    for information_on_vacancies in information_on_vacancies:
-        pay_from = information_on_vacancies['pay_from']
-        pay_to = information_on_vacancies['pay_to']
-
-        if information_on_vacancies['currency'] == 'RUR'  or \
-            information_on_vacancies['currency'] == 'rub':
+        if information_on_vacancy['currency'] == 'RUR'  or \
+            information_on_vacancy['currency'] == 'rub':
             salary = predict_rub_salary(pay_from, pay_to)
 
-            if salary != None:
+            if salary:
                 processed_vacancies += 1
                 full_salary += salary
 
     average_salary = int(full_salary / processed_vacancies)
     data_on_vacancies = {
-                                    language:
-                                            {
-                                            'vacancies_found': vacancies_found,
-                                            'vacancies_processed': processed_vacancies,
-                                            'average_salary': average_salary
-                                            }
-                                        }
+        language: {
+        'vacancies_found': vacancies_found,
+        'vacancies_processed': processed_vacancies,
+        'average_salary': average_salary
+        }
+    }
 
     return data_on_vacancies
 
 
 def get_table_hh(programming_languages):
     site_name = 'hh'
-    vacancies = []
+    vacancies = {}
 
     for language in programming_languages:
         all_vacancies = get_information_from_hh(language)
         information_on_vacancies = get_vacancies_hh(all_vacancies, language)
-        vacancies.append(get_information_for_the_table(information_on_vacancies,
+        vacancies.update(get_information_for_the_table(information_on_vacancies,
                                                         language, site_name)
                                                         )
-    print_vacancy_info(site_name, vacancies)
+    return get_vacancy_information(site_name, vacancies)
 
 
 def get_table_sj(programming_languages, token):
     site_name = 'sj'
-    vacancies = []
+    vacancies = {}
 
     for language in programming_languages:
         all_vacancies = get_information_from_sj(language, token)
         information_on_vacancies = get_vacancies_sj(all_vacancies, language)
-        vacancies.append(get_information_for_the_table(information_on_vacancies,
+        vacancies.update(get_information_for_the_table(information_on_vacancies,
                                                         language, site_name)
                                                         )
-    print_vacancy_info(site_name, vacancies)
+    return get_vacancy_information(site_name, vacancies)
 
 
-def print_vacancy_info(site_name, vacancies):
+def get_vacancy_information(site_name, vacancies):
     table_data = [
     [
         'Язык программирования',
@@ -82,17 +81,16 @@ def print_vacancy_info(site_name, vacancies):
     ]
     ]
 
-    for vacancies in vacancies:
-        for language in vacancies:
+    for language, vacancy in vacancies.items():
 
-            table_data.append([
-                language,
-                vacancies[language]['vacancies_found'],
-                vacancies[language]['vacancies_processed'],
-                vacancies[language]['average_salary']
-                ])
-        table_instance = SingleTable(table_data, site_name)
-    print(table_instance.table)
+        table_data.append([
+            language,
+            vacancy['vacancies_found'],
+            vacancy['vacancies_processed'],
+            vacancy['average_salary']
+            ])
+    table_instance = SingleTable(table_data, site_name)
+    return table_instance
 
 
 if __name__ == '__main__':
@@ -109,5 +107,7 @@ if __name__ == '__main__':
         'C',
         'Go',
         'Typescript']
-    get_table_hh(programming_languages)
-    get_table_sj(programming_languages, token)
+    table_instance = get_table_hh(programming_languages)
+    print(table_instance.table)
+    table_instance = get_table_sj(programming_languages, token)
+    print(table_instance.table)

@@ -13,7 +13,8 @@ def get_information_from_hh(language):
         'text': 'Программист {}'.format(language),
         'area': city_number,
         'page': page,
-        'only_with_salary': 'True'}
+        'only_with_salary': 'True'
+    }
 
     while page < vacancies_the_page:
         params['page'] = page
@@ -31,9 +32,9 @@ def get_vacancies_hh(all_vacancies, language):
     information_on_vacancies = []
     
     for part_vacancies in all_vacancies:
-        for vacancies in part_vacancies['items']:
-            pay_from = vacancies['salary']['from']
-            pay_to = vacancies['salary']['to']
+        for vacancy in part_vacancies['items']:
+            pay_from = vacancy['salary']['from']
+            pay_to = vacancy['salary']['to']
 
             if  pay_from and pay_from < 400:
                 pay_from *= 1000
@@ -41,11 +42,12 @@ def get_vacancies_hh(all_vacancies, language):
             if pay_to and pay_to < 400:
                 pay_from *= 1000
 
-            vacancies = {'language': language,
-                    'pay_from': pay_from,
-                    'pay_to':  pay_to,
-                    'currency': vacancies['salary']['currency'],
-                    'found': part_vacancies['found']
-                    }
-            information_on_vacancies.append(vacancies)
+            vacancy = {
+                'language': language,
+                'pay_from': pay_from,
+                'pay_to':  pay_to,
+                'currency': vacancy['salary']['currency'],
+                'found': part_vacancies['found']
+            }
+            information_on_vacancies.append(vacancy)
     return information_on_vacancies
